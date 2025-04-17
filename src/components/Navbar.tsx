@@ -5,9 +5,8 @@ import { Search, ShoppingCart, Menu, Heart, User, ChevronUp, ChevronDown } from 
 import Link from 'next/link';
 import TopBar from './TopBar'; // TopBar componentini import ettik
 
-interface NavbarProps {}
 
-const Navbar: React.FC<NavbarProps> = () => {
+const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {

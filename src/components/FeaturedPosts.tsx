@@ -1,6 +1,5 @@
 import React from 'react';
 import PostCard from './PostCard';
-import { ImageProps } from 'next/image';
 
 const FeaturedPosts: React.FC = () => {
   return (

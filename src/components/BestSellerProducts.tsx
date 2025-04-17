@@ -1,9 +1,8 @@
 import React from 'react';
 import ProductCard, { ProductCardProps } from './ProductCard'; // Path'i kendi dosya yapınıza göre ayarlayın
 
-interface BestSellerProductsProps {}
 
-const BestSellerProducts: React.FC<BestSellerProductsProps> = () => {
+const BestSellerProducts: React.FC = () => {
   const fakeBestSellerProducts: ProductCardProps[] = [
     {
       imageUrl: 'https://picsum.photos/400/500?random=1',
