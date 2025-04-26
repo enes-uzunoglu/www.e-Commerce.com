@@ -4,9 +4,9 @@ import Link from 'next/link';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-100 py-8 md:py-12 text-sm text-gray-600">
-      <div className="container mx-auto px-9 md:px-0">
-        <div className="flex justify-between items-center mb-6 md:mb-8">
+    <footer className="bg-gray-100 py-4 w-full fixed bottom-0 text-sm text-gray-600 ">
+      <div className="mx-auto px-9 ">
+        <div className="flex justify-between w-full items-center mb-6 md:mb-8">
           <div>
             <Link href="/" className="text-lg font-semibold text-gray-800">
               Bandage
