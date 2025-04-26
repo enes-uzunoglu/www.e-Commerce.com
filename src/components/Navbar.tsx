@@ -1,9 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, {use, useEffect, useState } from 'react';
 import { Search, ShoppingCart, Menu, Heart, User, ChevronUp, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import TopBar from './TopBar'; // TopBar componentini import ettik
+import { AppDispatch, RootState } from '@/lib/Redux-Toolkit/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { categoriesThunk } from '@/lib/Redux-Toolkit/Thunks/CategoriesThunk';
+import { Category } from '@/types/CategoryType';
 
 
 const Navbar: React.FC = () => {
@@ -13,12 +17,22 @@ const Navbar: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
-  return (
-    <>
-      <TopBar /> {/* TopBar componentini buraya ekledik */}
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(categoriesThunk());
+  }, [dispatch]);
 
-      {/*TODO: CONTAİNER İKEN MOBİLEDE BOŞLUK OLMADIGI ICIN ORTALAMA YAPAMIYORDU. YER ACTIM PX-9 İLE OLDU. DESKTOP KENDILIGINDEN ICERIKTEN GENIS OLDUGUNDAN BOSLUK KALMISTI. */}
-      <nav className="px-9 mx-auto bg-white py-3  flex md:flex-row items-center justify-between shadow-sm relative">
+  const categories: Category[] = useSelector((state: RootState) => state.product.categories);
+  // categories'ı store'dan alıyoruz. Burada state.categories.categories, Redux store'undaki categories dilimini temsil eder.
+
+
+  return (
+    // TODO: relative iken mx-auto düzgün çalışır çünkü öğe normal akışta yer alır → ortalanabilir.
+    // Ama fixed yaptığında öğe normal akıştan çıkar, bu yüzden mx-auto artık ortalamaz, çünkü genişlik (width) tanımlı değilse etkisiz kalır. w-full gerekir. fixed yapınca, mx-auto çalışmaz çünkü artık sayfa düzeninden kopmuştur. Ortalamak için genişlik vermen gerekir.
+      <nav className='fixed z-50 w-full' >
+      <TopBar /> {/* TopBar componentini buraya ekledik */}
+      { /*TODO: CONTAİNER İKEN MOBİLEDE BOŞLUK OLMADIGI ICIN ORTALAMA YAPAMIYORDU. YER ACTIM PX-9 İLE OLDU. DESKTOP KENDILIGINDEN ICERIKTEN GENIS OLDUGUNDAN BOSLUK KALMISTI. */}
+      <div className="px-9 mx-auto bg-white py-3  flex md:flex-row items-center justify-between shadow-sm relative">
         {/* Marka Adı (Ortalanmış - Mobile, Sola Yaslı - Desktop) */}
         <Link href="/" className="text-xl md:text-2xl font-bold text-gray-800 md:mr-8">
           Bandage
@@ -34,6 +48,10 @@ const Navbar: React.FC = () => {
               Shop <ChevronDown className="w-4 h-4 ml-1" />
             </Link>
             {/* Dropdown Menü (Şimdilik Boş) */}
+            <div className="absolute left-0 hidden group-hover:block bg-white shadow-md mt-2 rounded-md p-4">
+              {categories.map((category:Category)=>
+              <Link key={category.id} href={`/shop/${category.gender}/${category.title.toLowerCase()}/${category.id}`} className="block text-gray-700 hover:text-blue-500 py-1">{category.title}</Link>)}
+            </div>
           </div>
           <Link href="/about" className="text-gray-700 hover:text-blue-500 mx-4">
             About
@@ -48,7 +66,7 @@ const Navbar: React.FC = () => {
 
         {/* Mobil Menü ve İkonlar (Sadece Küçük Ekran) */}
         <div className="md:hidden flex items-center space-x-4">
-          <Link href="/login" className="hover:text-blue-500">
+          <Link href="/signup" className="hover:text-blue-500">
             <User className="h-6 w-6 text-gray-600 hover:text-blue-500 cursor-pointer" />
           </Link>
           <Search className="h-6 w-6 text-gray-600 hover:text-blue-500 cursor-pointer" />
@@ -96,8 +114,8 @@ const Navbar: React.FC = () => {
             </div>
           </div>
         )}
-      </nav>
-    </>
+      </div>
+        </nav>
   );
 };
 

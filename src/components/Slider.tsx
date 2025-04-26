@@ -4,7 +4,7 @@ import Image from 'next/image';
 const Slider: React.FC = () => {
   return (
     <div className="container relative overflow-hidden rounded-lg shadow-lg mx-auto ">
-      <div className="relative bg-gradient-to-b from-cyan-200 to-blue-300 py-16 px-10 flex items-center justify-between lg:flex-row flex-col text-center lg:text-left">
+      <div className="relative bg-gradient-to-b from-cyan-200 to-blue-300 py-16 px-9 flex items-center justify-between lg:flex-row flex-col text-center lg:text-left">
         {/* Text Content */}
         <div className="flex flex-col items-center lg:items-start max-w-md">
           <p className="text-sm text-blue-600 font-semibold tracking-wider uppercase mb-2">

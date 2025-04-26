@@ -5,6 +5,7 @@ import { Geist, Protest_Guerrilla } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Providers from "@/lib/Redux-Toolkit/Providers";
 
 // İstediğin fontları değişkene atıyorsun.
 // Bu şekilde font yüklemesine dinamik yükleme denir.
@@ -81,9 +82,13 @@ export default function RootLayout({
         // TODO: antialiased: Bu, CSS'te antialiasing (kenar yumuşatma) uygulamak için kullanılan bir sınıftır.
         // Yazıların daha pürüzsüz görünmesini sağlamak için kullanılır. Genellikle daha estetik bir font görünümü elde etmek için eklenir.
       >
+        <Providers>
         <Navbar />
-        {children}
+        <main className="pt-28 pb-72"> {/* örnek değerler */}
+      {children}
+    </main>
         <Footer />
+        </Providers>
       </body>
     </html>
   );
