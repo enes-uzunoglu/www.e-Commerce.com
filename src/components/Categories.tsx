@@ -6,13 +6,8 @@ import { AppDispatch,RootState } from '@/lib/Redux-Toolkit/store';
 import { categoriesThunk } from '@/lib/Redux-Toolkit/Thunks/CategoriesThunk';
 import { Category } from '@/types/CategoryType';
 
-interface CategoriesProps {
-  categories: Category[];
-}
 
-
-
-const Categories: React.FC<CategoriesProps> = () => {
+const Categories: React.FC = () => {
   const dispatch=useDispatch<AppDispatch>();
 
 useEffect(() => {

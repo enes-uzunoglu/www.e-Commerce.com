@@ -1,10 +1,11 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { categoriesThunk } from "../Thunks/CategoriesThunk";
 import { Category } from "@/types/CategoryType";
+import { productListThunk } from "../Thunks/ProductListThunk";
 
 interface ProductState {
     categories: Category[];
-    productList: object[];
+    productList: object;
     total: number;
     limit: number;
     ofset: number;
@@ -15,7 +16,7 @@ interface ProductState {
 
 const initialState: ProductState = {
     categories: [],
-    productList: [],
+    productList: {},
     total: 0,
     limit: 25,
     ofset: 0,
@@ -59,7 +60,19 @@ const ProductSlice = createSlice({
             .addCase(categoriesThunk.rejected, (state,action) => {
                 state.status = "Failed";
                 console.error("Error fetching categories:", action.error.message);
-            });
+            })
+            .addCase(productListThunk.pending, (state) => {
+                state.status = "Loading";
+            }   )
+            .addCase(productListThunk.fulfilled, (state, action: PayloadAction<object>) => {
+                state.productList = action.payload;
+                state.status = "Succeeded";
+            })
+            .addCase(productListThunk.rejected, (state, action) => {
+                state.status = "Failed";
+                state.error = action.error.message || "Unknown error";
+            })
+                
     },
 });
 
