@@ -6,96 +6,128 @@ import { Product } from '@/types/ProductType';
 import { Loader } from 'lucide-react';
 import { productListThunk } from '@/lib/Redux-Toolkit/Thunks/ProductListThunk';
 import { setOfset } from '@/lib/Redux-Toolkit/Slices/ProductSlice';
+import { AppDispatch, RootState } from '@/lib/Redux-Toolkit/store';
 
 const ProductList: React.FC = () => {
-  const dispatch = useDispatch();
-  const { productList, status, total, limit, ofset } = useSelector((state: any) => state.product);
-  
-  const [sortOption, setSortOption] = useState('default');
-  const [filterText, setFilterText] = useState('');
-  
-  // Force pagination to show at least 5 pages for testing
-  const totalPages = Math.ceil(productList.total / limit);
-  const currentPage = Math.floor(ofset / limit) + 1;
+  const dispatch = useDispatch<AppDispatch>();
 
-  // Komponentler yüklendiğinde
+  /*
+  const dispatch = useDispatch<>(); tip belirtmezsek default olarak any tipimiz olur.
+  Böyle bir durumda dispatch(action) şeklinde kullanabiliriz. Burada tek kaybımız autocomplete özelliği olur.
+
+  Fakat dispatch(thunk()) şeklinde kullanırsak, thunk fonksiyonunun tipini belirlememiz gerekir.
+  Bu durumda thunk fonksiyonunun tipini belirlemek için AppDispatch tipini kullanıyoruz.
+  Yoksa hata alırız...
+
+  TODO:createAsyncThunk kullanınca,
+  Otomatik olarak bir tipli "function" üretiliyor.
+  (İçinde pending, fulfilled, rejected action'larının tipleri var.)
+
+  createAsyncThunk bu bir fonksiyondur ve bir tipi vardır. boş olsa dahi default olarak. 
+  örneğin:createAsyncThunk<ReturnedData>( 
+*/
+
+  const { productList, status, limit, offset } = useSelector((state: RootState) => state.product);
+  
+  const [siralamaSecenegi, setSiralamaSecenegi] = useState('default'); 
+  const [filtrelemeKelimesi, setFiltrelemeKelimesi] = useState('');
+  
+  
+  const toplamSayfaSayisi = Math.ceil(productList.total / limit);
+  const aktifSayfa = Math.floor(offset / limit) + 1;
+
   useEffect(() => {
-    console.log("Component yüklendi, ilk veri çekilecek");
-    // @ts-ignore
-    dispatch(productListThunk({ limit, offset: ofset, filter: filterText }));
-  }, []);
+    dispatch(productListThunk({ limit:limit, offset: offset, filter: filtrelemeKelimesi }));
+  }, []); // sayfa yüklendiğinde sayfa 1 deki ürünleri bir alalım. initial state verileri ile istek gittiği için offset 0 yani sayfa 1 ürünlerini alırız.
 
   // Debug bilgisi - ne olduğunu görelim
   useEffect(() => {
     console.log("Redux Store Durumu:", {
       productList,
       status,
-      total,
       limit,
-      ofset,
-      totalPages,
-      currentPage
+      offset,
+      toplamSayfaSayisi,
+      aktifSayfa
     });
-  }, [productList, status, total, limit, ofset]);
+  }, [productList, status, productList.total, limit, offset]);
 
-  const handlePageChange = (page: number) => {
-    console.log(`Sayfa değiştiriliyor: ${page}`);
-    const newOffset = (page - 1) * limit;
-    console.log(`Yeni offset: ${newOffset}`);
+  const SayfaDegisimiYapan = (sayfa: number) => {  // sayfa parametresini yerini paginationdan alacağız.
+    const newOffset = (sayfa - 1) * limit;
     
-    // @ts-ignore
-    dispatch(setOfset(newOffset));
+    dispatch(setOfset(newOffset)); // initialState'deki offset değerini günceliyoruz böylece
     
     // Sayfa değiştikten sonra yeni ürünleri yükle
     setTimeout(() => {
-      console.log(`Yeni ürünler yükleniyor - offset: ${newOffset}`);
-      
-      // @ts-ignore
       dispatch(productListThunk({ 
-        limit, 
+        limit, // bu limit:limit demek
         offset: newOffset, 
-        filter: filterText 
+        filter: filtrelemeKelimesi 
       }));
     }, 100); // Redux state güncellemesi için küçük bir gecikme
   };
 
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortOption(e.target.value);
-  };
+  
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterText(e.target.value);
-  };
+  /*
+  React.ChangeEvent bir event tipidir ve belirli bir HTML elemanının değişim (change) olayını temsil eder.
 
-  const handleFilterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Filtre uygulanıyor:", filterText);
+  React.ChangeEvent'in Yapısı:
+
+  React.ChangeEvent<T> şablon tipi, aşağıdaki gibi çalışır:
+  T burada HTML eleman türü'dür. Örneğin, HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement gibi.
+  Bu event, değişim işlemi (input, select, vb.) yapılırken target'i, yani hangi HTML elemanının değiştiğini, bilmenizi sağlar.
+
+  örneğin a bir tip olsun a=TipAdi<HangiElemanaAitTip>
+
+  TODO:not: React.ChangeEvent bir fonksiyon değil, aslında bir tip. ChangeEvent, React'in sağladığı ve bir değişiklik (change) olayını temsil eden bir tiptir. Bu tip, form elemanlarında (örneğin, <input>, <select>, <textarea>) gerçekleşen değişiklikleri yakalamak için kullanılır.
+  */
+
+  const FiltrelemeYapan = (event: React.ChangeEvent<HTMLInputElement>) => { // event parametresi, input elemanının değişim olayını temsil eder.
+    setFiltrelemeKelimesi(event.target.value); // input elemanının değişim olayınından odak değeri alıyorum.
+
+    // TODO:event.preventDefault(); onChange olayında sayfa yenilemesi olmadığı için kullanmadım.
     
-    // @ts-ignore
     dispatch(setOfset(0));
     
-    // @ts-ignore
     dispatch(productListThunk({ 
+    limit, 
+    offset: 0, 
+    filter: filtrelemeKelimesi 
+  }));
+  };
+
+  
+    /* burada filtrelemeyi ben onchange ile yapmak istiyorum. submit butonu kullansaydım eğer input ile butonu birleştirip form kapsayıcısında yapardım. ve 
+
+      const handleFilterSubmit = (event: React.FormEvent) => { 
+
+      event.preventDefault(); sumbit olaylarında sayfa yenilemeyi önler tarayıcı gereksiz refleksini kırıyor yani 
+
+      console.log("Filtre uygulanıyor:", filtrelemeKelimesi);
+    
+      dispatch(setOfset(0));
+    
+      dispatch(productListThunk({ 
       limit, 
       offset: 0, 
-      filter: filterText 
+      filter: filtrelemeKelimesi 
     }));
+  };
+    */
+    
+  const SiralamaSecenegiBelirleyen = (event: React.ChangeEvent<HTMLSelectElement>) => { // event parametresi, select elemanının değişim olayını temsil ediyor
+    setSiralamaSecenegi(event.target.value);
   };
 
   // Ürünleri sıralama fonksiyonu
-  const getSortedProducts = () => {
-    if (!productList || !productList.products || !Array.isArray(productList.products)) {
-      console.log("Gösterilecek ürün yok veya veri yapısı hatalı:", productList);
-      return [];
-    }
-
-    console.log(`${productList.products.length} ürün bulundu`);
+  const SiralamaYapan = () => {
     const products = [...productList.products];
     
-    switch (sortOption) {
-      case 'price-asc':
+    switch (siralamaSecenegi) {
+      case 'price-ascending ':
         return products.sort((a, b) => a.price - b.price);
-      case 'price-desc':
+      case 'price-descending ':
         return products.sort((a, b) => b.price - a.price);
       case 'rating':
         return products.sort((a, b) => b.rating - a.rating);
@@ -106,65 +138,90 @@ const ProductList: React.FC = () => {
     }
   };
 
-  const getVisiblePages = () => {
-    const pages = [];
-    const maxVisiblePages = 3; // Ortada gösterilecek maksimum sayfa sayısı
+  const gorunurSayfalarıGetir = () => {
+    const sayfalar = [];
+    const enFazlaGoruntulenecekSayfaSayisi = 3; // Ortada gösterilecek maksimum sayfa sayısı
   
-    if (totalPages <= maxVisiblePages) {
+    if (toplamSayfaSayisi <= enFazlaGoruntulenecekSayfaSayisi) {
       // Toplam sayfa sayısı az ise hepsini göster
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
+      for (let i = 1; i <= toplamSayfaSayisi; i++) {
+        sayfalar.push(i);
       }
-    } else if (currentPage <= 3) {
+    } else if (aktifSayfa <= enFazlaGoruntulenecekSayfaSayisi) {
       // Başlangıç sayfalarındayız
-      for (let i = 1; i <= 3; i++) {
-        pages.push(i);
+      for (let i = 1; i <= enFazlaGoruntulenecekSayfaSayisi; i++) {
+        sayfalar.push(i);
       }
-    } else if (currentPage >= totalPages - 2) {
+    } else if (aktifSayfa >= toplamSayfaSayisi - 2) {
       // Son sayfalardayız
-      for (let i = totalPages - 2; i <= totalPages; i++) {
-        pages.push(i);
+      for (let i = toplamSayfaSayisi - 2; i <= toplamSayfaSayisi; i++) {
+        sayfalar.push(i);
       }
     } else {
       // Ortadaki sayfalardayız
-      pages.push(currentPage - 1);
-      pages.push(currentPage);
-      pages.push(currentPage + 1);
+      sayfalar.push(aktifSayfa - 1);
+      sayfalar.push(aktifSayfa);
+      sayfalar.push(aktifSayfa + 1);
     }
   
-    return pages;
+    return sayfalar;
   };
 
-  const renderAlwaysVisiblePagination = () => {
+  /* başka bir alternatif pagination yapısı
+
+  const gorunurSayfalarıGetir = () => {
+  const sayfalar = [];
+  const enFazlaSayfa = 3;
+
+  // Gösterilecek ilk sayfayı bul
+  let start = Math.max(1, aktifSayfa - 1); TODO:Math.max(a,b) a ve b sayılarından büyük olanı döner.
+  // Gösterilecek son sayfayı bul
+  let end = Math.min(toplamSayfaSayisi, start + enFazlaSayfa - 1);
+
+  // Eğer sona çok yaklaşmışsak, başı kaydır
+  if (end - start + 1 < enFazlaSayfa) {
+    start = Math.max(1, end - enFazlaSayfa + 1);
+  }
+
+  for (let i = start; i <= end; i++) {
+    sayfalar.push(i);
+  }
+
+  return sayfalar;
+};
+
+  */
+
+  const sayfalandırma = () => {
     return (
       <div className="flex items-center justify-center mt-4 border border-gray-300 p-4 bg-gray-100 rounded-md">
         <button
-          onClick={() => handlePageChange(1)}
-          disabled={currentPage === 1}
+          onClick={() => SayfaDegisimiYapan(1)}
+          disabled={aktifSayfa === 1}
           className={`px-3 py-1 border border-gray-400 rounded-l-md ${
-            currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
+            aktifSayfa === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
           }`}
         >
           İlk
         </button>
         
         <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
+          onClick={() => SayfaDegisimiYapan(aktifSayfa - 1)}
+          disabled={aktifSayfa === 1}
           className={`px-3 py-1 border-t border-b border-gray-400 ${
-            currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
+            aktifSayfa === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
           }`}
         >
           Önceki
         </button>
   
-        {getVisiblePages().map((page: number | '...', index) => (
+        {gorunurSayfalarıGetir().map((page: number | '...', index) => (
           <button
             key={index}
-            onClick={() => page !== '...' && handlePageChange(page as number)}
+            onClick={() => page !== '...' && SayfaDegisimiYapan(page as number)}
             disabled={page === '...'}
             className={`px-3 py-1 border-t border-b border-gray-400 ${
-              page === currentPage 
+              page === aktifSayfa 
                 ? 'bg-blue-600 text-white' 
                 : page === '...' 
                   ? 'bg-white cursor-default' 
@@ -176,20 +233,20 @@ const ProductList: React.FC = () => {
         ))}
   
         <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          onClick={() => SayfaDegisimiYapan(aktifSayfa + 1)}
+          disabled={aktifSayfa === toplamSayfaSayisi}
           className={`px-3 py-1 border-t border-b border-gray-400 ${
-            currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
+            aktifSayfa === toplamSayfaSayisi ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
           }`}
         >
           Sonraki
         </button>
   
         <button
-          onClick={() => handlePageChange(totalPages)}
-          disabled={currentPage === totalPages}
+          onClick={() => SayfaDegisimiYapan(toplamSayfaSayisi)}
+          disabled={aktifSayfa === toplamSayfaSayisi}
           className={`px-3 py-1 border border-gray-400 rounded-r-md ${
-            currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
+            aktifSayfa === toplamSayfaSayisi ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
           }`}
         >
           Son
@@ -203,8 +260,8 @@ const ProductList: React.FC = () => {
       <div className="mb-6 flex flex-col md:flex-row justify-end items-center gap-4">
         <div className="w-full md:w-1/4">
           <select
-            value={sortOption}
-            onChange={handleSortChange}
+            value={siralamaSecenegi}
+            onChange={SiralamaYapan}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="default">Varsayılan Sıralama</option>
@@ -215,33 +272,33 @@ const ProductList: React.FC = () => {
           </select>
         </div>
         
-        <form onSubmit={handleFilterSubmit} className="w-full md:w-1/3">
-          <div className="flex">
+        {/* <form onSubmit={FiltrelemeYapan} className="w-full md:w-1/3">
+          <div className="flex"> */}
             <input
               type="text"
-              value={filterText}
-              onChange={handleFilterChange}
+              value={filtrelemeKelimesi}
+              onChange={SiralamaYapan}
               placeholder="Ürünleri ara..."
               className="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-            <button 
+            {/* <button 
               type="submit"
               className="bg-indigo-600 text-white px-4 py-2 rounded-r-md hover:bg-indigo-700"
             >
               Filtrele
             </button>
-          </div>
-        </form>
-      </div>
+          </div> 
+        </form> */}
+      </div> 
       
       {/* Debug bilgileri */}
       <div className="mb-4 p-2 bg-gray-100 border border-gray-300 rounded text-sm">
         <p><strong>Debug Bilgileri:</strong></p>
-        <p>Toplam Ürün: {total || 'Bilinmiyor'}</p>
+        <p>Toplam Ürün: {productList.total || 'Bilinmiyor'}</p>
         <p>Limit: {limit}</p>
-        <p>Offset: {ofset}</p>
-        <p>Toplam Sayfa: {totalPages}</p>
-        <p>Şu anki Sayfa: {currentPage}</p>
+        <p>Offset: {offset}</p>
+        <p>Toplam Sayfa: {toplamSayfaSayisi}</p>
+        <p>Şu anki Sayfa: {aktifSayfa}</p>
         <p>API Durumu: {status}</p>
         <p>Ürün Sayısı: {productList.total}</p>
       </div>
@@ -258,14 +315,14 @@ const ProductList: React.FC = () => {
         <>
           {/* Ürün listesi */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {getSortedProducts().map((product: Product) => (
+            {SiralamaYapan().map((product: Product) => (
               <ProductCard key={product.id} {...product} />
             ))}
           </div>
           
           {/* Her zaman görünür pagination */}
           <div className="mt-8">
-            {renderAlwaysVisiblePagination()}
+            {sayfalandırma()} {/* TODO:burada bu component içindeki bir fonksiyonu alıyoruz. farklı yerdeki component da zaten bir fonksıyondan olusuyor. */}
           </div>
         </>
       )}

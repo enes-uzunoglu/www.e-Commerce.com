@@ -2,13 +2,13 @@ import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { categoriesThunk } from "../Thunks/CategoriesThunk";
 import { Category } from "@/types/CategoryType";
 import { productListThunk } from "../Thunks/ProductListThunk";
+import { Product } from "@/types/ProductType";
 
 interface ProductState {
     categories: Category[];
-    productList: object;
-    total: number;
+    productList: {products:Product[], total: number};
     limit: number;
-    ofset: number;
+    offset: number;
     filter: string;
     status: string;
     error: string | null;
@@ -16,10 +16,9 @@ interface ProductState {
 
 const initialState: ProductState = {
     categories: [],
-    productList: {},
-    total: 0,
+    productList: {products:[], total:0},
     limit: 25,
-    ofset: 0,
+    offset: 0,
     filter: "",
     status: "idle", // "idle" | "loading" | "succeeded" | "failed"
     error: null,
@@ -27,22 +26,22 @@ const initialState: ProductState = {
 
 const ProductSlice = createSlice({
     name: "product",
-    initialState,
+    initialState, 
     reducers: {
         setCategories: (state, action: PayloadAction<Category[]>) => {
             state.categories = action.payload;
         },
-        setProductList: (state, action: PayloadAction<object[]>) => {
+        setProductList: (state, action: PayloadAction<{products:Product[], total: number}>) => {
             state.productList = action.payload;
         },
         setTotal: (state, action: PayloadAction<number>) => {
-            state.total = action.payload;
+            state.productList.total = action.payload;
         },
         setLimit: (state, action: PayloadAction<number>) => {
             state.limit = action.payload;
         },
         setOfset: (state, action: PayloadAction<number>) => {
-            state.ofset = action.payload;
+            state.offset = action.payload;
         },
         setFilter: (state, action: PayloadAction<string>) => {
             state.filter = action.payload;
@@ -64,7 +63,7 @@ const ProductSlice = createSlice({
             .addCase(productListThunk.pending, (state) => {
                 state.status = "Loading";
             }   )
-            .addCase(productListThunk.fulfilled, (state, action: PayloadAction<object>) => {
+            .addCase(productListThunk.fulfilled, (state, action: PayloadAction<{products:Product[], total: number}>) => {
                 state.productList = action.payload;
                 state.status = "Succeeded";
             })
