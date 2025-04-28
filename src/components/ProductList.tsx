@@ -15,8 +15,7 @@ const ProductList: React.FC = () => {
   const [filterText, setFilterText] = useState('');
   
   // Force pagination to show at least 5 pages for testing
-  const forcedTotalPages = 5;
-  const totalPages = Math.max(forcedTotalPages, Math.ceil((total || 0) / limit));
+  const totalPages = Math.ceil(productList.total / limit);
   const currentPage = Math.floor(ofset / limit) + 1;
 
   // Komponentler yüklendiğinde
@@ -107,47 +106,91 @@ const ProductList: React.FC = () => {
     }
   };
 
-  // Bu fonksiyon HER ZAMAN pagination butonlarını gösterecek
+  const getVisiblePages = () => {
+    const pages = [];
+    const maxVisiblePages = 3; // Ortada gösterilecek maksimum sayfa sayısı
+  
+    if (totalPages <= maxVisiblePages) {
+      // Toplam sayfa sayısı az ise hepsini göster
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else if (currentPage <= 3) {
+      // Başlangıç sayfalarındayız
+      for (let i = 1; i <= 3; i++) {
+        pages.push(i);
+      }
+    } else if (currentPage >= totalPages - 2) {
+      // Son sayfalardayız
+      for (let i = totalPages - 2; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Ortadaki sayfalardayız
+      pages.push(currentPage - 1);
+      pages.push(currentPage);
+      pages.push(currentPage + 1);
+    }
+  
+    return pages;
+  };
+
   const renderAlwaysVisiblePagination = () => {
     return (
       <div className="flex items-center justify-center mt-4 border border-gray-300 p-4 bg-gray-100 rounded-md">
         <button
           onClick={() => handlePageChange(1)}
-          className="px-3 py-1 bg-white border border-gray-400 rounded-l-md hover:bg-gray-200"
+          disabled={currentPage === 1}
+          className={`px-3 py-1 border border-gray-400 rounded-l-md ${
+            currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
+          }`}
         >
           İlk
         </button>
         
         <button
-          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-          className="px-3 py-1 bg-white border-t border-b border-gray-400 hover:bg-gray-200"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`px-3 py-1 border-t border-b border-gray-400 ${
+            currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
+          }`}
         >
           Önceki
         </button>
-        
-        {/* Sabit 5 sayfa göster */}
-        {[1, 2, 3, 4, 5].map((pageNum) => (
+  
+        {getVisiblePages().map((page: number | '...', index) => (
           <button
-            key={pageNum}
-            onClick={() => handlePageChange(pageNum)}
+            key={index}
+            onClick={() => page !== '...' && handlePageChange(page as number)}
+            disabled={page === '...'}
             className={`px-3 py-1 border-t border-b border-gray-400 ${
-              currentPage === pageNum ? 'bg-blue-600 text-white' : 'bg-white hover:bg-gray-200'
+              page === currentPage 
+                ? 'bg-blue-600 text-white' 
+                : page === '...' 
+                  ? 'bg-white cursor-default' 
+                  : 'bg-white hover:bg-gray-200'
             }`}
           >
-            {pageNum}
+            {page}
           </button>
         ))}
-        
+  
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          className="px-3 py-1 bg-white border-t border-b border-gray-400 hover:bg-gray-200"
+          disabled={currentPage === totalPages}
+          className={`px-3 py-1 border-t border-b border-gray-400 ${
+            currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
+          }`}
         >
           Sonraki
         </button>
-        
+  
         <button
           onClick={() => handlePageChange(totalPages)}
-          className="px-3 py-1 bg-white border border-gray-400 rounded-r-md hover:bg-gray-200"
+          disabled={currentPage === totalPages}
+          className={`px-3 py-1 border border-gray-400 rounded-r-md ${
+            currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-white hover:bg-gray-200'
+          }`}
         >
           Son
         </button>
@@ -200,7 +243,7 @@ const ProductList: React.FC = () => {
         <p>Toplam Sayfa: {totalPages}</p>
         <p>Şu anki Sayfa: {currentPage}</p>
         <p>API Durumu: {status}</p>
-        <p>Ürün Sayısı: {productList && productList.products ? productList.products.length : 0}</p>
+        <p>Ürün Sayısı: {productList.total}</p>
       </div>
       
       {status === "Loading" ? (
