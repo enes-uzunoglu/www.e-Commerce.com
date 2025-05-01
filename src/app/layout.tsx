@@ -2,8 +2,7 @@
 import type { Metadata } from "next";
 import { Geist, Protest_Guerrilla } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+
 import Providers from "@/lib/Redux-Toolkit/Providers";
 
 const geistSans = Geist({
