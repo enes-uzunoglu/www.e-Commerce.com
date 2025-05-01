@@ -8,12 +8,12 @@ export interface LoginFormProps {
 
 import { AppDispatch, RootState } from '@/lib/Redux-Toolkit/store';
 import { loginThunk } from '@/lib/Redux-Toolkit/Thunks/LoginThunk';
-import React, { use, useEffect } from 'react'   
+import React, { useEffect } from 'react'   
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 function LoginForm() {
-    const {register, handleSubmit, formState, control, setValue, getValues, reset,watch} =useForm<LoginFormProps>({
+    const {register, handleSubmit} =useForm<LoginFormProps>({
         defaultValues: {
             email: "",
             password: "",

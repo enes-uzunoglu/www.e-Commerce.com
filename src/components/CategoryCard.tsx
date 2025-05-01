@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { Category } from '@/types/CategoryType';
 
 const CategoryCard: React.FC<Category> = ({
-  id,
   code,
   img,
   title,

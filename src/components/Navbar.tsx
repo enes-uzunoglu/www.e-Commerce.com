@@ -1,6 +1,6 @@
 "use client";
 
-import React, {use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, ShoppingCart, Menu, Heart, User, ChevronUp, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import TopBar from './TopBar'; // TopBar componentini import ettik

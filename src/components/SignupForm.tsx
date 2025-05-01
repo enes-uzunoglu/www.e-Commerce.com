@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useForm, SubmitHandler, useFormState } from 'react-hook-form';
+import { useForm, SubmitHandler} from 'react-hook-form';
 import { Role, SignupFormState } from '@/types/SignupFormState'; // Doğru import yolunu kontrol edin
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/lib/Redux-Toolkit/store';
-import { SignupFormPayload, signupThunk } from '@/lib/Redux-Toolkit/Thunks/SignupThunk';
+import { signupThunk } from '@/lib/Redux-Toolkit/Thunks/SignupThunk';
 
 
 const SignupForm: React.FC = () => {
-  const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm<SignupFormState>();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm<SignupFormState>();
   const [showStoreFields, setShowStoreFields] = useState(false);
   const roles: Role[] = [
     { id: '1', name: 'Admin' },
@@ -28,7 +28,7 @@ const SignupForm: React.FC = () => {
   }, [selectedRole]);
 
   const onSubmit: SubmitHandler<SignupFormState> = (data) => { // burada passwordConfirmation olan type ama datadakı type da passwordConfirmation yok.
-    const { passwordConfirmation, ...filteredData } = data;
+    const { ...filteredData } = data;
     console.log(filteredData);
     dispatch( signupThunk(filteredData) );
             console.log(data);

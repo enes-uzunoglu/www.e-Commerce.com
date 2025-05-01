@@ -5,7 +5,7 @@ export const productListThunk = createAsyncThunk(  // createAsyncThunk bu bir fo
 // örneğin:createAsyncThunk<ReturnedData>( 
   "productListThunk",
   async ({ limit, offset, filter,categoryName }: { limit?: number; offset?: number; filter?: string | string[] | undefined; categoryName?:string}) => {
-    let url = `https://workintech-fe-ecommerce.onrender.com/products`;
+    const url = `https://workintech-fe-ecommerce.onrender.com/products`;
 
     const params = new URLSearchParams();
     if (limit) {

@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'; 
 
 import ProductCard from './ProductCard'; 
@@ -42,7 +42,7 @@ const ProductList: React.FC<Props> = (props) => {  // TODO: BURADAN PROPS ALMAAY
   const [siralamaSecenegi, setSiralamaSecenegi] = useState('default'); 
   const [filtrelemeKelimesi, setFiltrelemeKelimesi] = useState(categoryName || ''); // categoryName'i varsayılan değer olarak alıyoruz.
   // TODO: KENDİ BACKENDINDE BURAYI BOŞ STRİNG YAPACAKSIN GERİ
-  
+
   
   
   const toplamSayfaSayisi = Math.ceil(productList.total / limit);
@@ -52,17 +52,17 @@ const ProductList: React.FC<Props> = (props) => {  // TODO: BURADAN PROPS ALMAAY
 
 
   // Debug bilgisi - ne olduğunu görelim
-  useEffect(() => {
-    console.log("Redux Store Durumu:", {
-      categoryName,
-      productList,
-      status,
-      limit,
-      offset,
-      toplamSayfaSayisi,
-      aktifSayfa
-    });
-  }, [productList, status, productList.total, limit, offset]);
+  // useEffect(() => {
+  //   console.log("Redux Store Durumu:", {
+  //     categoryName,
+  //     productList,
+  //     status,
+  //     limit,
+  //     offset,
+  //     toplamSayfaSayisi,
+  //     aktifSayfa
+  //   });
+  // }, [productList, status, productList.total, limit, offset]);
 
   
 
@@ -97,14 +97,15 @@ const ProductList: React.FC<Props> = (props) => {  // TODO: BURADAN PROPS ALMAAY
   TODO:not: React.ChangeEvent bir fonksiyon değil, aslında bir tip. ChangeEvent, React'in sağladığı ve bir değişiklik (change) olayını temsil eden bir tiptir. Bu tip, form elemanlarında (örneğin, <input>, <select>, <textarea>) gerçekleşen değişiklikleri yakalamak için kullanılır.
   */
 
-  const KategoriDegistiren = () => {
-    dispatch(productListThunk({ 
-      categoryName: categoryName // kategori adını güncelleyip gönderiyoruz.
-    }));
-  }
+  // const KategoriDegistiren = () => {
+  //   dispatch(productListThunk({ 
+  //     categoryName: categoryName // kategori adını güncelleyip gönderiyoruz.
+  //   }));
+  // }
 
-  useEffect(() => {KategoriDegistiren()}
-  , [categoryName]); // TODO: BU KISMI EKNDİ BACKENDİNDE YAPACAKSIN.
+  // useEffect(() => {KategoriDegistiren()}
+  // , [categoryName]); // TODO: BU KISMI EKNDİ BACKENDİNDE YAPACAKSIN.
+
   const FiltrelemeYapan = (event: React.ChangeEvent<HTMLInputElement>) => { // event parametresi, input elemanının değişim olayını temsil eder.
    setFiltrelemeKelimesi(event.target.value);// input elemanının değişim olayınından odak değeri alıyorum.
 

@@ -4,15 +4,13 @@ import Image from 'next/image'; // Next.js Image component'ini import edin
 import { Product } from '@/types/ProductType';
 
 const ProductCard: React.FC<Product> = ({  // aldıgı propsun type Producut oldugunu belirtiyoruz.
-  id,
+
   name,
   description,
   price,
-  stock,
-  store_id,
-  category_id,
+
   rating,
-  sell_count,
+
   images,
 }) => {
   // images dizisinden ilk görselin URL'ini alıyoruz, eğer varsa
