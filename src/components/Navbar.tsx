@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Search, ShoppingCart, Menu, Heart, User, ChevronUp, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import TopBar from './TopBar'; // TopBar componentini import ettik
-import { AppDispatch, RootState } from '@/app/store';
+import { AppDispatch, RootState } from '@/lib/Redux-Toolkit/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { categoriesThunk } from '@/lib/Redux-Toolkit/Thunks/CategoriesThunk';
 import { Category } from '@/types/CategoryType';

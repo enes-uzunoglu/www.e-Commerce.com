@@ -7,7 +7,7 @@ import { Product } from '@/types/ProductType';
 import { Loader } from 'lucide-react';
 import { productListThunk } from '@/lib/Redux-Toolkit/Thunks/ProductListThunk';
 import { setOfset } from '@/lib/Redux-Toolkit/Slices/ProductSlice';
-import { AppDispatch, RootState } from '@/app/store';
+import { AppDispatch, RootState } from '@/lib/Redux-Toolkit/store';
 
 
 type Props = {

@@ -1,6 +1,6 @@
 'use client';
 
-import CategoryPage from "@/pages/CategoryPage";
+import CategoryPage from "@/ewqeq/CategoryPage";
 import { useParams } from "next/navigation";
 
 export default function Category() {
