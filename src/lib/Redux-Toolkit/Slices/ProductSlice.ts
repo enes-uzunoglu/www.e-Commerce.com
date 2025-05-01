@@ -1,24 +1,26 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { categoriesThunk } from "../Thunks/CategoriesThunk";
 import { Category } from "@/types/CategoryType";
+import { productListThunk } from "../Thunks/ProductListThunk";
+import { Product } from "@/types/ProductType";
 
 interface ProductState {
     categories: Category[];
-    productList: object[];
-    total: number;
+    categoryName: string;
+    productList: {products:Product[], total: number};
     limit: number;
-    ofset: number;
-    filter: string;
+    offset: number;
+    filter: string | string[] | undefined;
     status: string;
     error: string | null;
 }
 
 const initialState: ProductState = {
     categories: [],
-    productList: [],
-    total: 0,
+    categoryName: "",
+    productList: {products:[], total:0},
     limit: 25,
-    ofset: 0,
+    offset: 0,
     filter: "",
     status: "idle", // "idle" | "loading" | "succeeded" | "failed"
     error: null,
@@ -26,22 +28,25 @@ const initialState: ProductState = {
 
 const ProductSlice = createSlice({
     name: "product",
-    initialState,
+    initialState, 
     reducers: {
         setCategories: (state, action: PayloadAction<Category[]>) => {
             state.categories = action.payload;
         },
-        setProductList: (state, action: PayloadAction<object[]>) => {
+        setCategoryName: (state, action: PayloadAction<string>) => {
+            state.categoryName = action.payload;             //  TODO:  BU KISMI SEN KENDİ BACKENDINDE DUZELT
+        },
+        setProductList: (state, action: PayloadAction<{products:Product[], total: number}>) => {
             state.productList = action.payload;
         },
         setTotal: (state, action: PayloadAction<number>) => {
-            state.total = action.payload;
+            state.productList.total = action.payload;
         },
         setLimit: (state, action: PayloadAction<number>) => {
             state.limit = action.payload;
         },
         setOfset: (state, action: PayloadAction<number>) => {
-            state.ofset = action.payload;
+            state.offset = action.payload;
         },
         setFilter: (state, action: PayloadAction<string>) => {
             state.filter = action.payload;
@@ -59,7 +64,19 @@ const ProductSlice = createSlice({
             .addCase(categoriesThunk.rejected, (state,action) => {
                 state.status = "Failed";
                 console.error("Error fetching categories:", action.error.message);
-            });
+            })
+            .addCase(productListThunk.pending, (state) => {
+                state.status = "Loading";
+            }   )
+            .addCase(productListThunk.fulfilled, (state, action: PayloadAction<{products:Product[], total: number}>) => {
+                state.productList = action.payload;
+                state.status = "Succeeded";
+            })
+            .addCase(productListThunk.rejected, (state, action) => {
+                state.status = "Failed";
+                state.error = action.error.message || "Unknown error";
+            })
+                
     },
 });
 

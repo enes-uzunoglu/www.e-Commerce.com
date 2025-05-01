@@ -1,42 +1,42 @@
 import React from 'react';
-import Image from 'next/image';
 import { Star } from 'lucide-react';
+import Image from 'next/image'; // Next.js Image component'ini import edin
+import { Product } from '@/types/ProductType';
 
-export interface ProductCardProps {
-  imageUrl: string;
-  title: string;
-  department: string;
-  originalPrice: number;
-  discountedPrice: number;
-  rating?: number;
-}
-
-const ProductCard: React.FC<ProductCardProps> = ({
-  imageUrl,
-  title,
-  department,
-  originalPrice,
-  discountedPrice,
+const ProductCard: React.FC<Product> = ({  // aldıgı propsun type Producut oldugunu belirtiyoruz.
+  id,
+  name,
+  description,
+  price,
+  stock,
+  store_id,
+  category_id,
   rating,
+  sell_count,
+  images,
 }) => {
+  // images dizisinden ilk görselin URL'ini alıyoruz, eğer varsa
+
+
   return (
     <div className="bg-white rounded-md shadow-md overflow-hidden">
       <div className="relative w-full">
         <Image
-          src={imageUrl}
-          alt={title}
+          src={images&&images[0].url} //images varsa kontrolü iyidir // İlk görselin URL'ini kullanıyoruz
+          alt={name}
           width={300}
           height={400}
           className="object-cover w-full h-auto"
         />
       </div>
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">{title}</h3>
-        <p className="text-sm text-gray-600 mt-1">{department}</p>
+        <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">{name}</h3>
+        <p className="text-sm text-gray-600 mt-1">{description}</p>
         <div className="flex items-center justify-between mt-2">
           <div>
-            <span className="text-sm line-through text-gray-500">${originalPrice.toFixed(2)}</span>
-            <span className="ml-2 text-md font-bold text-indigo-600">${discountedPrice.toFixed(2)}</span>
+            {/* Orijinal fiyat bilgisi ProductType'ınızda yok, bu kısmı yorum satırı yapıyorum */}
+            {/* <span className="text-sm line-through text-gray-500">${originalPrice.toFixed(2)}</span> */}
+            <span className="ml-2 text-md font-bold text-indigo-600">${price.toFixed(2)}</span>
           </div>
           {rating && (
             <div className="flex items-center">
