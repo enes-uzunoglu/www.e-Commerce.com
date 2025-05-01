@@ -1,12 +1,12 @@
+// next.config.js
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
-    domains: ['picsum.photos', 'via.placeholder.com', 'workintech-fe-ecommerce.onrender.com', 'cdn.dsmcdn.com'], // Picsum photos domaini eklendi
+    domains: ['picsum.photos', 'via.placeholder.com', 'workintech-fe-ecommerce.onrender.com', 'cdn.dsmcdn.com'],
+    unoptimized: true, // Statik dışa aktarma için gerekli
   },
-  // SSR sırasında Redux sorunlarını çözmek için:
-  output: "export", // veya bu satırı kaldırıp sadece mevcut ayarları kullanabilirsiniz
+  output: 'export',
 };
 
 export default nextConfig;
