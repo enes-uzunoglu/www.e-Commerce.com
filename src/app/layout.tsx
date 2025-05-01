@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Providers from "@/lib/Redux-Toolkit/Providers";
 
+
 // İstediğin fontları değişkene atıyorsun.
 // Bu şekilde font yüklemesine dinamik yükleme denir.
 // Yani fontlar sadece ihtiyaç duyulduğunda yüklenir.
