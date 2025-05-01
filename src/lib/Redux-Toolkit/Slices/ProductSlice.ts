@@ -6,16 +6,18 @@ import { Product } from "@/types/ProductType";
 
 interface ProductState {
     categories: Category[];
+    categoryName: string;
     productList: {products:Product[], total: number};
     limit: number;
     offset: number;
-    filter: string;
+    filter: string | string[] | undefined;
     status: string;
     error: string | null;
 }
 
 const initialState: ProductState = {
     categories: [],
+    categoryName: "",
     productList: {products:[], total:0},
     limit: 25,
     offset: 0,
@@ -30,6 +32,9 @@ const ProductSlice = createSlice({
     reducers: {
         setCategories: (state, action: PayloadAction<Category[]>) => {
             state.categories = action.payload;
+        },
+        setCategoryName: (state, action: PayloadAction<string>) => {
+            state.categoryName = action.payload;             //  TODO:  BU KISMI SEN KENDİ BACKENDINDE DUZELT
         },
         setProductList: (state, action: PayloadAction<{products:Product[], total: number}>) => {
             state.productList = action.payload;

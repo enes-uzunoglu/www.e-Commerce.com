@@ -1,14 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { use, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux'; 
 
-import ProductCard from './ProductCard';
+import ProductCard from './ProductCard'; 
 import { Product } from '@/types/ProductType';
 import { Loader } from 'lucide-react';
 import { productListThunk } from '@/lib/Redux-Toolkit/Thunks/ProductListThunk';
 import { setOfset } from '@/lib/Redux-Toolkit/Slices/ProductSlice';
 import { AppDispatch, RootState } from '@/lib/Redux-Toolkit/store';
 
-const ProductList: React.FC = () => {
+
+type Props = {
+  categoryName?: string;  //  propsu dikkattt burada tnaımladım
+// TODO:  VAYY soru işareti ? koyunca props gondermeden yayınladıgım shoppage e musade ettı
+};
+
+
+const ProductList: React.FC<Props> = (props) => {  // TODO: BURADAN PROPS ALMAAYCAM YINE DE OLSUN
+
+  const {categoryName} = props;
+
   const dispatch = useDispatch<AppDispatch>();
 
   /*
@@ -27,22 +37,24 @@ const ProductList: React.FC = () => {
   örneğin:createAsyncThunk<ReturnedData>( 
 */
 
-  const { productList, status, limit, offset } = useSelector((state: RootState) => state.product);
+  const {productList, status, limit, offset } = useSelector((state: RootState) => state.product);
   
   const [siralamaSecenegi, setSiralamaSecenegi] = useState('default'); 
-  const [filtrelemeKelimesi, setFiltrelemeKelimesi] = useState('');
+  const [filtrelemeKelimesi, setFiltrelemeKelimesi] = useState(categoryName || ''); // categoryName'i varsayılan değer olarak alıyoruz.
+  // TODO: KENDİ BACKENDINDE BURAYI BOŞ STRİNG YAPACAKSIN GERİ
+  
   
   
   const toplamSayfaSayisi = Math.ceil(productList.total / limit);
   const aktifSayfa = Math.floor(offset / limit) + 1;
+ 
 
-  useEffect(() => {
-    dispatch(productListThunk({ limit:limit, offset: offset, filter: filtrelemeKelimesi }));
-  }, []); // sayfa yüklendiğinde sayfa 1 deki ürünleri bir alalım. initial state verileri ile istek gittiği için offset 0 yani sayfa 1 ürünlerini alırız.
+
 
   // Debug bilgisi - ne olduğunu görelim
   useEffect(() => {
     console.log("Redux Store Durumu:", {
+      categoryName,
       productList,
       status,
       limit,
@@ -51,6 +63,8 @@ const ProductList: React.FC = () => {
       aktifSayfa
     });
   }, [productList, status, productList.total, limit, offset]);
+
+  
 
   const SayfaDegisimiYapan = (sayfa: number) => {  // sayfa parametresini yerini paginationdan alacağız.
     const newOffset = (sayfa - 1) * limit;
@@ -83,21 +97,33 @@ const ProductList: React.FC = () => {
   TODO:not: React.ChangeEvent bir fonksiyon değil, aslında bir tip. ChangeEvent, React'in sağladığı ve bir değişiklik (change) olayını temsil eden bir tiptir. Bu tip, form elemanlarında (örneğin, <input>, <select>, <textarea>) gerçekleşen değişiklikleri yakalamak için kullanılır.
   */
 
+  const KategoriDegistiren = () => {
+    dispatch(productListThunk({ 
+      categoryName: categoryName // kategori adını güncelleyip gönderiyoruz.
+    }));
+  }
+
+  useEffect(() => {KategoriDegistiren()}
+  , [categoryName]); // TODO: BU KISMI EKNDİ BACKENDİNDE YAPACAKSIN.
   const FiltrelemeYapan = (event: React.ChangeEvent<HTMLInputElement>) => { // event parametresi, input elemanının değişim olayını temsil eder.
-    setFiltrelemeKelimesi(event.target.value); // input elemanının değişim olayınından odak değeri alıyorum.
+   setFiltrelemeKelimesi(event.target.value);// input elemanının değişim olayınından odak değeri alıyorum.
 
     // TODO:event.preventDefault(); onChange olayında sayfa yenilemesi olmadığı için kullanmadım.
     
     dispatch(setOfset(0));
     
-    dispatch(productListThunk({ 
-    limit, 
-    offset: 0, 
-    filter: filtrelemeKelimesi 
-  }));
+    setTimeout(() => { // Redux state güncellemesi için küçük bir gecikme  /*TODO: BU GECİKME aa aramasında a aramasını göstermesini engelledi.
+      dispatch(productListThunk({ 
+        limit, 
+        offset: 0, 
+        filter: event.target.value // filtreleme kelimesini güncelleyip gönderiyoruz.
+      }));
+    }, 100); // Redux state güncellemesi için küçük bir gecikme
+   
   };
 
-  
+  //console.log("Filtreleme kelimesi:", filtrelemeKelimesi); // filtreleme kelimesini görmek için
+
     /* burada filtrelemeyi ben onchange ile yapmak istiyorum. submit butonu kullansaydım eğer input ile butonu birleştirip form kapsayıcısında yapardım. ve 
 
       const handleFilterSubmit = (event: React.FormEvent) => { 
@@ -125,9 +151,9 @@ const ProductList: React.FC = () => {
     const products = [...productList.products];
     
     switch (siralamaSecenegi) {
-      case 'price-ascending ':
-        return products.sort((a, b) => a.price - b.price);
-      case 'price-descending ':
+      case 'price-ascending':
+        return products.sort((a, b) => a.price - b.price);   // TODO: hataya sebep olan şe yanlış bırakılan bir boşluk varmış. dikkat et 
+      case 'price-descending':
         return products.sort((a, b) => b.price - a.price);
       case 'rating':
         return products.sort((a, b) => b.rating - a.rating);
@@ -261,12 +287,12 @@ const ProductList: React.FC = () => {
         <div className="w-full md:w-1/4">
           <select
             value={siralamaSecenegi}
-            onChange={SiralamaYapan}
+            onChange={SiralamaSecenegiBelirleyen}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="default">Varsayılan Sıralama</option>
-            <option value="price-asc">Fiyat: Düşükten Yükseğe</option>
-            <option value="price-desc">Fiyat: Yüksekten Düşüğe</option>
+            <option value="price-ascending">Fiyat: Düşükten Yükseğe</option>
+            <option value="price-descending">Fiyat: Yüksekten Düşüğe</option>
             <option value="rating">En İyi Puan</option>
             <option value="popular">En Popüler</option>
           </select>
@@ -277,7 +303,7 @@ const ProductList: React.FC = () => {
             <input
               type="text"
               value={filtrelemeKelimesi}
-              onChange={SiralamaYapan}
+              onChange={FiltrelemeYapan}
               placeholder="Ürünleri ara..."
               className="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
@@ -294,6 +320,7 @@ const ProductList: React.FC = () => {
       {/* Debug bilgileri */}
       <div className="mb-4 p-2 bg-gray-100 border border-gray-300 rounded text-sm">
         <p><strong>Debug Bilgileri:</strong></p>
+        <p>categoryName:{categoryName}</p>
         <p>Toplam Ürün: {productList.total || 'Bilinmiyor'}</p>
         <p>Limit: {limit}</p>
         <p>Offset: {offset}</p>
@@ -319,7 +346,8 @@ const ProductList: React.FC = () => {
               <ProductCard key={product.id} {...product} />
             ))}
           </div>
-          
+          {/* {console.log(SiralamaYapan())} Debug için sıralı ürünleri görmek için */}
+
           {/* Her zaman görünür pagination */}
           <div className="mt-8">
             {sayfalandırma()} {/* TODO:burada bu component içindeki bir fonksiyonu alıyoruz. farklı yerdeki component da zaten bir fonksıyondan olusuyor. */}

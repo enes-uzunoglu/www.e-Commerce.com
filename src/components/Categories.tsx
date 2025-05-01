@@ -25,14 +25,15 @@ const categories: Category[] = useSelector((state: RootState) => state.product.c
         .map((category) => (
         <CategoryCard
           key={category.id}
+          id={category.id} // bunu eklemelıydım cunku categoryCard'da kullanıyorum ve bekliyor benden
           img={category.img}
           title={category.title}
           rating={category.rating} 
           code={category.code}
           gender={category.gender}
         />
-        
       ))}
+      
     </div>
   );
 };
