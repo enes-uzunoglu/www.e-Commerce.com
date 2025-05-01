@@ -2,6 +2,7 @@ import React from 'react';
 import { Star } from 'lucide-react';
 import Image from 'next/image'; // Next.js Image component'ini import edin
 import { Product } from '@/types/ProductType';
+import Link from 'next/link';
 
 const ProductCard: React.FC<Product> = ({  // aldıgı propsun type Producut oldugunu belirtiyoruz.
   id,
@@ -19,6 +20,7 @@ const ProductCard: React.FC<Product> = ({  // aldıgı propsun type Producut old
 
 
   return (
+    <Link href={`/products/${id}`}>
     <div className="bg-white rounded-md shadow-md overflow-hidden">
       <div className="relative w-full">
         <Image
@@ -52,6 +54,7 @@ const ProductCard: React.FC<Product> = ({  // aldıgı propsun type Producut old
         </button>
       </div>
     </div>
+  </Link>
   );
 };
 

@@ -9,7 +9,7 @@ const CategoryCard: React.FC<Category> = ({
   id,
   code,
   img,
-  title,
+  title, 
   rating,
   gender,
 }) => {
