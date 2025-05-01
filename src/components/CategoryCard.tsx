@@ -2,23 +2,21 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { Category } from '@/types/CategoryType';
 
-interface CategoryCardProps {
-  code: string;
-  img: string;
-  title: string;
-  rating: number;
-  gender: string;
-}
-
-const CategoryCard: React.FC<CategoryCardProps> = ({
+const CategoryCard: React.FC<Category> = ({
+  id,
   code,
   img,
   title,
   rating,
   gender,
 }) => {
+  
+  console.log(title)
   return (
+    <Link href={`/shop/${title}`} className="block">
     <div className="relative w-full aspect-[1/1] overflow-hidden rounded-xl shadow-md group">
       <Image
         src={img}
@@ -34,6 +32,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         <p className="text-sm">{gender === 'k' ? 'Kadın' : 'Erkek'}</p>
       </div>
     </div>
+    </Link>
   );
 };
 

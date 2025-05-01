@@ -1,4 +1,4 @@
-
+'use client';
 import React from "react";
 import TopProduct from "@/components/TopProduct";
 import BestSellerProducts from "@/components/BestSellerProducts";
