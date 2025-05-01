@@ -7,7 +7,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Providers from "@/lib/Redux-Toolkit/Providers";
 
-
 // İstediğin fontları değişkene atıyorsun.
 // Bu şekilde font yüklemesine dinamik yükleme denir.
 // Yani fontlar sadece ihtiyaç duyulduğunda yüklenir.
@@ -52,7 +51,7 @@ export default function RootLayout({
 
               // Default olarak zaten eklenir.
 
-          <link rel="icon" type="image/png" href="/cerezmalatyalogo.png" />
+          <link rel="icon" type="image/png" href="/cerezmalatyalogo.png" /> 
 
               // Direkt favicon.ico olarak src/app içinde ekliyoruz.
 
@@ -84,11 +83,11 @@ export default function RootLayout({
         // Yazıların daha pürüzsüz görünmesini sağlamak için kullanılır. Genellikle daha estetik bir font görünümü elde etmek için eklenir.
       >
         <Providers>
-        <Navbar />
-        <main className="pt-28 pb-72"> {/* örnek değerler */}
-      {children}
-    </main>
-        <Footer />
+          <Navbar />
+          <main className="pt-28 pb-72"> {/* örnek değerler */}
+            {children}
+          </main>
+          <Footer />
         </Providers>
       </body>
     </html>
