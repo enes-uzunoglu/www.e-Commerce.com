@@ -34,9 +34,9 @@ export default function RootLayout({
       >
         <Providers>
           <Navbar />
-          <main className="pt-28 pb-72">
+         
             {children}
-          </main>
+     
           <Footer />
         </Providers>
       </body>
