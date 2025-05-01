@@ -1,3 +1,4 @@
+'use client'
 import ProductList from '@/components/ProductList'
 import React from 'react'
 
