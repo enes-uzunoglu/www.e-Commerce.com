@@ -1,3 +1,4 @@
+'use client'
 import { LoginFormProps } from "@/components/LoginForm";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";

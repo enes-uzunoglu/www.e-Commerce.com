@@ -1,3 +1,4 @@
+'use client'
 import { Category } from "@/types/CategoryType";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";

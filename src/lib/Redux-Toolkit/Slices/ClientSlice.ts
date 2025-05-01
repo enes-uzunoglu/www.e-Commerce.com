@@ -1,3 +1,4 @@
+'use client'
 import {  createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { loginThunk } from '../Thunks/LoginThunk';
 import { signupThunk } from '../Thunks/SignupThunk';

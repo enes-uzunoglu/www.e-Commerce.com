@@ -1,4 +1,4 @@
-
+'use client'
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 // import { SignupFormState } from '@/types/SignupFormState';  // SignupFormState tipini içe aktarıyoruz
