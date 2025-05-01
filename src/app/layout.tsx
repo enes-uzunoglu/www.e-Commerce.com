@@ -1,3 +1,4 @@
+'use client';
 import { useEffect, useState } from 'react';
 import type { Metadata } from 'next';
 import { Geist, Protest_Guerrilla } from 'next/font/google';
