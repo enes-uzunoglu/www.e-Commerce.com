@@ -1,3 +1,4 @@
+'use client'
 import ShopPage from "@/pages/ShopPage";
 
 export default function Shop() {

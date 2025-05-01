@@ -1,4 +1,4 @@
-
+'use client'
 import Homepage from "@/pages/HomePage";
 
 
