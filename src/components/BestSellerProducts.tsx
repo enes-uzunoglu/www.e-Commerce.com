@@ -2,7 +2,7 @@
 import React, {  useEffect } from 'react';
 import ProductCard from './ProductCard'; 
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@/lib/Redux-Toolkit/store';
+import { AppDispatch, RootState } from '@/app/store';
 import { productListThunk } from '@/lib/Redux-Toolkit/Thunks/ProductListThunk';
 
 

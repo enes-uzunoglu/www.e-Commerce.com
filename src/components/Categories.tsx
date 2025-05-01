@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import CategoryCard from './CategoryCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch,RootState } from '@/lib/Redux-Toolkit/store';
+import { AppDispatch,RootState } from '@/app/store';
 import { categoriesThunk } from '@/lib/Redux-Toolkit/Thunks/CategoriesThunk';
 import { Category } from '@/types/CategoryType';
 

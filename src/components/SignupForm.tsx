@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler} from 'react-hook-form';
 import { Role, SignupFormState } from '@/types/SignupFormState'; // Doğru import yolunu kontrol edin
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@/lib/Redux-Toolkit/store';
+import { AppDispatch, RootState } from '@/app/store';
 import { signupThunk } from '@/lib/Redux-Toolkit/Thunks/SignupThunk';
 
 

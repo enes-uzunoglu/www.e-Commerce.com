@@ -6,7 +6,7 @@ export interface LoginFormProps {
 
 
 
-import { AppDispatch, RootState } from '@/lib/Redux-Toolkit/store';
+import { AppDispatch, RootState } from '@/app/store';
 import { loginThunk } from '@/lib/Redux-Toolkit/Thunks/LoginThunk';
 import React, { useEffect } from 'react'   
 import { useForm } from 'react-hook-form';
