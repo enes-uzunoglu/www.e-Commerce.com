@@ -2,6 +2,7 @@
 import React from 'react';
 import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 import Link from 'next/link';
+import { useSelector, useDispatch } from 'react-redux';
 
 const Footer: React.FC = () => {
   return (
