@@ -1,4 +1,4 @@
-
+'use client'
 import React, { useEffect } from 'react';
 import CategoryCard from './CategoryCard';
 import { useDispatch, useSelector } from 'react-redux';

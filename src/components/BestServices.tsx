@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { BookOpen, GraduationCap, Rocket } from 'lucide-react';
 
