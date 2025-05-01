@@ -1,5 +1,5 @@
 'use client'
-import ShopPage from "@/page/ShopPage";
+import ShopPage from "@/pages/ShopPage";
 
 export default function Shop() {
     return (
