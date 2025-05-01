@@ -2,7 +2,8 @@
 import type { Metadata } from "next";
 import { Geist, Protest_Guerrilla } from "next/font/google";
 import "./globals.css";
-
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Providers from "@/lib/Redux-Toolkit/Providers";
 
 const geistSans = Geist({
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode; 
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="tr">
@@ -32,10 +33,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${protestGuerrilla.variable} antialiased`}
       >
         <Providers>
-    
+          <Navbar />
          
             {children}
-   
+     
+          <Footer />
         </Providers>
       </body>
     </html>
