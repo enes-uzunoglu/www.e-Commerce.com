@@ -33,11 +33,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${protestGuerrilla.variable} antialiased`}
       >
         <Providers>
-          <Navbar />
+    
          
             {children}
-     
-          <Footer />
+   
         </Providers>
       </body>
     </html>
