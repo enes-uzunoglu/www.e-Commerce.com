@@ -1,5 +1,5 @@
 'use client'
-import Homepage from "@/ewqeq/HomePage";
+import Homepage from "@/page/HomePage";
 
 
 
