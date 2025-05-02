@@ -1,10 +1,15 @@
+'use client';
+
 import React from 'react';
 import { Star } from 'lucide-react';
-import Image from 'next/image'; // Next.js Image component'ini import edin
+import Image from 'next/image';
 import { Product } from '@/types/ProductType';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/lib/Redux-Toolkit/store';
+import { addToCart } from '@/lib/Redux-Toolkit/Slices/ShoppingCartSlice';
 
-const ProductCard: React.FC<Product> = ({  // aldıgı propsun type Producut oldugunu belirtiyoruz.
+const ProductCard: React.FC<Product> = ({
   id,
   name,
   description,
@@ -16,30 +21,39 @@ const ProductCard: React.FC<Product> = ({  // aldıgı propsun type Producut old
   sell_count,
   images,
 }) => {
-  // images dizisinden ilk görselin URL'ini alıyoruz, eğer varsa
+  const dispatch = useDispatch<AppDispatch>();
 
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart({
+        id,
+        name,
+        price,
+        image: images?.[0]?.url || '',
+        quantity: 1,
+      })
+    );
+  };
 
   return (
-    <Link href={`/products/${id}`}>
     <div className="bg-white rounded-md shadow-md overflow-hidden">
-      <div className="relative w-full">
-        <Image
-          src={images&&images[0].url} //images varsa kontrolü iyidir // İlk görselin URL'ini kullanıyoruz
-          alt={name}
-          width={300}
-          height={400}
-          className="object-cover w-full h-auto"
-        />
-      </div>
+      <Link href={`/products/${id}`}>
+        <div className="relative w-full cursor-pointer">
+          <Image
+            src={images?.[0]?.url || '/placeholder.jpg'}
+            alt={name}
+            width={300}
+            height={400}
+            className="object-cover w-full h-auto"
+          />
+        </div>
+      </Link>
+
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">{name}</h3>
         <p className="text-sm text-gray-600 mt-1">{description}</p>
         <div className="flex items-center justify-between mt-2">
-          <div>
-            {/* Orijinal fiyat bilgisi ProductType'ınızda yok, bu kısmı yorum satırı yapıyorum */}
-            {/* <span className="text-sm line-through text-gray-500">${originalPrice.toFixed(2)}</span> */}
-            <span className="ml-2 text-md font-bold text-indigo-600">${price.toFixed(2)}</span>
-          </div>
+          <span className="text-md font-bold text-indigo-600">${price.toFixed(2)}</span>
           {rating && (
             <div className="flex items-center">
               <Star className="w-4 h-4 text-yellow-500 fill-yellow-500 mr-1" />
@@ -48,13 +62,13 @@ const ProductCard: React.FC<Product> = ({  // aldıgı propsun type Producut old
           )}
         </div>
         <button
+          onClick={handleAddToCart}
           className="mt-4 w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 rounded-md transition duration-200 active:bg-indigo-700 active:scale-95 cursor-pointer"
         >
           Sepete Ekle
         </button>
       </div>
     </div>
-  </Link>
   );
 };
 
